@@ -174,6 +174,8 @@ export default {
             e.preventDefault()
             setAll(this.invalid, true)
             if (this.validateInput()) {
+                const { recaptcha } = this
+
                 setAll(this.prev, null)
                 this.resetRecaptcha()
 
@@ -183,7 +185,7 @@ export default {
                     email: this.email,
                     name: this.name,
                     password: this.password,
-                    recaptcha: this.recaptcha,
+                    recaptcha,
                 })
                     .then(res => {
                         this.setLoading(false)

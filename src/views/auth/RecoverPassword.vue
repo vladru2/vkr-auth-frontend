@@ -128,6 +128,7 @@ export default {
             if (this.verifyStartInput()) {
                 const { login } = start
                 const { recaptcha } = this
+
                 this.resetRecaptcha()
 
                 this.setLoading(this.$t('action.recover-password.requesting'))

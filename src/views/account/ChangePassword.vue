@@ -175,7 +175,7 @@ export default {
         },
         finish(password) {
             this.setLoading(this.$t('action.change-password.finishing'))
-            passwordChangeFinish(password, this.actionToken)
+            passwordChangeFinish(this.actionToken, password)
                 .then(res => {
                     this.setLoading(false)
                     if (res.success) {

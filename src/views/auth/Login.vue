@@ -174,17 +174,19 @@ export default {
             e.preventDefault()
             setAll(this.invalid, true)
             if (this.validateInput()) {
-                setAll(this.prev, null)
                 const { recaptchaRequired, mfaRequired } = this.form
+                const { recaptcha } = this
+
+                setAll(this.prev, null)
                 setAll(this.form, false)
+                this.resetRecaptcha()
 
                 this.setLoading(this.$t('action.logging-in'))
-                this.resetRecaptcha()
 
                 login({
                     login: this.login,
                     password: this.password,
-                    recaptcha: this.recaptcha,
+                    recaptcha,
                 })
                     .then(res => {
                         this.setLoading(false)

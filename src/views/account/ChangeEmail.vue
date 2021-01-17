@@ -210,7 +210,7 @@ export default {
             email.invalid = true
             if (this.validateEmail()) {
                 this.setLoading(this.$t('action.change-email.finishing'))
-                emailChangeFinish(email.input, this.actionToken)
+                emailChangeFinish(this.actionToken, email.input)
                     .then(res => {
                         this.setLoading(false)
                         if (res.success) {
