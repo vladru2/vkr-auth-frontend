@@ -4,7 +4,7 @@
             <div class="flex flex_vert_r">
                 <input
                     id=""
-                    type="text"
+                    type="password"
                     v-model="password"
                     :class="{ invalid_input: invalidPassword || wrongPassword }"
                     v-on:keyup.enter="proceed"
