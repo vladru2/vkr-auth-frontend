@@ -13,7 +13,7 @@
                 <label for=""> {{ $t('label.password') }} </label>
             </div>
             <div v-if="wrongPassword" class="invalid_input_description">
-                {{ $t('error.wrong.') }}
+                {{ $t('error.wrong.password') }}
             </div>
         </div>
 
