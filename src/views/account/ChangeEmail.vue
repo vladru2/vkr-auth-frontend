@@ -215,6 +215,9 @@ export default {
                         this.setLoading(false)
                         if (res.success) {
                             this.success = true
+                            const { account } = this
+                            account.verified = false
+                            this.$store.commit('auth/finished', account)
                         }
                         if (res.unauthorized) {
                             this.$store.commit('auth/finished', null)
