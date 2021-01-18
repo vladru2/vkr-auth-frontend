@@ -2,9 +2,14 @@
     <ContentWrapper :title="$t('title.recover-password')">
         <AuthWrapper>
             <UnauthorizedWrapper>
-                <div class="expand" />
+                <Loading
+                    inner-class="expand"
+                    :loading="loading"
+                    :request-failed="requestFailed"
+                    @reset-error="resetError"
+                >
+                    <div class="expand" />
 
-                <Loading :loading="loading" :request-failed="requestFailed" @reset-error="resetError">
                     <div v-if="!emailChallenge">
                         <div class="flex flex_vert_r">
                             <input
@@ -54,29 +59,30 @@
                     <div v-else-if="!success">
                         <NewPassword @submit="finish" />
                     </div>
+
+                    <div class="expand" />
+
+                    <div class="text_center">
+                        {{ $t('link.website') }}
+                        <a class="link" :href="urls.website">{{ urls.website }}</a>
+                    </div>
+
+                    <div class="spacer_small" />
+
+                    <div class="text_center">
+                        {{ $t('question.no-account') }}
+                        <router-link class="link" to="/create-account">{{ $t('link.create-account') }}</router-link>
+                    </div>
+
+                    <div class="spacer_small" />
+
+                    <div class="text_center">
+                        {{ $t('question.login') }}
+                        <router-link class="link" to="/login">{{ $t('link.login') }}</router-link>
+                    </div>
                 </Loading>
-                <div class="expand" />
             </UnauthorizedWrapper>
         </AuthWrapper>
-
-        <div class="text_center">
-            {{ $t('link.website') }}
-            <a class="link" :href="urls.website">{{ urls.website }}</a>
-        </div>
-
-        <div class="spacer_small" />
-
-        <div class="text_center">
-            {{ $t('question.no-account') }}
-            <router-link class="link" to="/create-account">{{ $t('link.create-account') }}</router-link>
-        </div>
-
-        <div class="spacer_small" />
-
-        <div class="text_center">
-            {{ $t('question.login') }}
-            <router-link class="link" to="/login">{{ $t('link.login') }}</router-link>
-        </div>
 
         <div class="spacer_small" />
 
