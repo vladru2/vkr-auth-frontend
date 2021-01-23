@@ -204,12 +204,12 @@ export default {
                         if (res['unknown-user']) {
                             this.invalid.login = true
                             this.prev.login = this.login
-                            this.showLoginHelp = true
+                            this.form.showLoginHelp = true
                         }
                         if (res['wrong-password']) {
                             this.invalid.password = true
                             this.prev.password = this.password
-                            this.showPasswordHelp = true
+                            this.form.showPasswordHelp = true
                         }
                         if (res['wrong-mfa']) {
                             if (mfaRequired) {
