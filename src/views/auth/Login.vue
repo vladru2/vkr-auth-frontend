@@ -103,7 +103,7 @@
 
                     <div class="text_center">
                         {{ $t('question.forgot-password') }}
-                        <router-link class="link" to="/recover-password">
+                        <router-link class="link" :to="localNavigation('/recover-password')">
                             {{ $t('link.recover-password') }}
                         </router-link>
                     </div>
@@ -112,9 +112,9 @@
 
                     <div class="text_center">
                         {{ $t('question.no-account') }}
-                        <div tabindex="0" class="link" @click="navigateToAccountCreation">
+                        <router-link tabindex="0" class="link" :to="localNavigation('/create-account')">
                             {{ $t('link.create-account') }}
-                        </div>
+                        </router-link>
                     </div>
 
                     <div class="spacer_small" />
@@ -169,9 +169,6 @@ export default {
         }
     },
     methods: {
-        navigateToAccountCreation() {
-            this.navigateLocal('/create-account')
-        },
         submit: function(e) {
             e.preventDefault()
             setAll(this.invalid, true)

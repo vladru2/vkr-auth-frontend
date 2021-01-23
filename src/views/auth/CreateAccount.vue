@@ -121,7 +121,9 @@
 
                     <div class="text_center">
                         {{ $t('question.account-exists') }}
-                        <div tabindex="0" class="link" @click="navigateToLogin">{{ $t('link.login') }}</div>
+                        <router-link tabindex="0" class="link" :to="localNavigation('/login')">{{
+                            $t('link.login')
+                        }}</router-link>
                     </div>
 
                     <div class="spacer_small" />
@@ -247,9 +249,6 @@ export default {
                 valid = false
             }
             return valid
-        },
-        navigateToLogin() {
-            this.navigateLocal('login')
         },
     },
     computed: {

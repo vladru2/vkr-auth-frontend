@@ -8,12 +8,12 @@ export default Vue.extend({
         }
     },
     methods: {
-        async navigateLocal(path: string) {
+        localNavigation(path: string): object {
             let query
             if (this.redirect) {
                 query = { redirect: this.redirect.toString() }
             }
-            return this.$router.push({ path, query })
+            return { path, query }
         },
     },
     created() {

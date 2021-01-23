@@ -71,14 +71,16 @@
 
                     <div class="text_center">
                         {{ $t('question.no-account') }}
-                        <router-link class="link" to="/create-account">{{ $t('link.create-account') }}</router-link>
+                        <router-link class="link" :to="localNavigation('/create-account')">{{
+                            $t('link.create-account')
+                        }}</router-link>
                     </div>
 
                     <div class="spacer_small" />
 
                     <div class="text_center">
                         {{ $t('question.account-exists') }}
-                        <router-link class="link" to="/login">{{ $t('link.login') }}</router-link>
+                        <router-link class="link" :to="localNavigation('/login')">{{ $t('link.login') }}</router-link>
                     </div>
                 </Loading>
             </UnauthorizedWrapper>
@@ -103,6 +105,7 @@ import { passwordRecoverFinish, passwordRecoverStart } from '@/api/password'
 import NewPassword from '@/components/NewPassword.vue'
 import EmailChallenge from '@/components/EmailChallenge.vue'
 import loading from '@/mixins/loading'
+import secureRedirect from '@/mixins/secure-redirect'
 
 export default {
     components: {
@@ -112,7 +115,7 @@ export default {
         UnauthorizedWrapper,
         ContentWrapper,
     },
-    mixins: [recaptcha, loading],
+    mixins: [recaptcha, secureRedirect, loading],
     data() {
         return {
             emailChallenge: '',
