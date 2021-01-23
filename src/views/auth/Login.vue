@@ -21,20 +21,22 @@
                         <div class="spacer_medium" />
                     </div>
 
-                    <div class="flex flex_vert_r">
-                        <input
-                            id="input_login"
-                            type="text"
-                            v-model="login"
-                            :class="{ invalid_input: invalid.login || unknownLogin }"
-                            v-on:keyup.enter="submit"
-                        />
-                        <div class="spacer_tiny" />
-                        <label for="input_login"> {{ $t('label.login') }} </label>
-                    </div>
+                    <div>
+                        <div class="flex flex_vert_r">
+                            <input
+                                id="input_login"
+                                type="text"
+                                v-model="login"
+                                :class="{ invalid_input: invalid.login || unknownLogin }"
+                                v-on:keyup.enter="submit"
+                            />
+                            <div class="spacer_tiny" />
+                            <label for="input_login"> {{ $t('label.login') }} </label>
+                        </div>
 
-                    <div v-show="unknownLogin" class="invalid_input_description">
-                        {{ $t('error.wrong.login') }}
+                        <div v-show="unknownLogin" class="invalid_input_description">
+                            {{ $t('error.wrong.login') }}
+                        </div>
                     </div>
 
                     <div class="spacer_medium" />
@@ -109,7 +111,7 @@
                     <div class="spacer_small" />
 
                     <div class="text_center">
-                        {{ $t('question.create-account') }}
+                        {{ $t('question.no-account') }}
                         <div tabindex="0" class="link" @click="navigateToAccountCreation">
                             {{ $t('link.create-account') }}
                         </div>
@@ -202,10 +204,12 @@ export default {
                         if (res['unknown-user']) {
                             this.invalid.login = true
                             this.prev.login = this.login
+                            this.showLoginHelp = true
                         }
                         if (res['wrong-password']) {
                             this.invalid.password = true
                             this.prev.password = this.password
+                            this.showPasswordHelp = true
                         }
                         if (res['wrong-mfa']) {
                             if (mfaRequired) {

@@ -21,7 +21,7 @@
 
                             <div class="spacer_small" />
 
-                            <div class="normal_text">{{ $t('account.reset.success') }}</div>
+                            <div class="normal_text">{{ $t('account.reset.details') }}</div>
 
                             <div class="spacer_small" />
 

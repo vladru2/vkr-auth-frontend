@@ -114,13 +114,13 @@
                     <div class="spacer_medium" />
 
                     <button @click="submit" :class="{ gray_button: !validateInput() }">
-                        {{ $t('button.submit') }}
+                        {{ $t('button.create-account') }}
                     </button>
 
                     <div class="expand" />
 
                     <div class="text_center">
-                        {{ $t('question.login') }}
+                        {{ $t('question.account-exists') }}
                         <div tabindex="0" class="link" @click="navigateToLogin">{{ $t('link.login') }}</div>
                     </div>
 

@@ -2,7 +2,7 @@
     <Loading :loading="loading" :request-failed="requestFailed" @reset-error="resetError">
         <div class="text_center">
             <div class="subtitle">
-                {{ $t('action.email-sent') }}
+                {{ $t('action.request-sent') }}
             </div>
 
             <div class="spacer_small" />

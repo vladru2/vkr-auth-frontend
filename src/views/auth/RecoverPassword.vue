@@ -77,7 +77,7 @@
                     <div class="spacer_small" />
 
                     <div class="text_center">
-                        {{ $t('question.login') }}
+                        {{ $t('question.account-exists') }}
                         <router-link class="link" to="/login">{{ $t('link.login') }}</router-link>
                     </div>
                 </Loading>

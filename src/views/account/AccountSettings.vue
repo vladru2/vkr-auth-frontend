@@ -163,7 +163,7 @@ export default {
                 })
         },
         logout() {
-            this.setLoading(this.$t('action.logout'))
+            this.setLoading(this.$t('action.logging-out'))
             logout()
                 .then(res => {
                     this.setLoading(false)

@@ -19,7 +19,7 @@
 
             <div class="spacer_small" />
 
-            {{ $t('question.login') }}
+            {{ $t('question.account-exists') }}
             <router-link class="link" to="/login">{{ $t('link.login') }}</router-link>
 
             <div class="spacer_small" />

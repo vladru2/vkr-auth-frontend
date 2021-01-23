@@ -16,7 +16,7 @@
             <div class="spacer_small" />
 
             <div class="flex flex_vert center">
-                <div class="normal_text">{{ $t('question.account-security') }}</div>
+                <div class="normal_text">{{ $t('suggestion.account-security') }}</div>
                 <a class="link" :href="urls.accountSecurity">{{ $t('link.account-security') }}</a>
             </div>
 
