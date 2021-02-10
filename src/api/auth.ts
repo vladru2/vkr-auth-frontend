@@ -1,4 +1,4 @@
-import { Account, index, fakeVerifyAccount, fakeApi, fakeDelay, fakeLoginAccount } from './index'
+import { Account, api, fakeVerifyAccount, fakeApi, fakeDelay, fakeLoginAccount, Status } from './index'
 
 export type CreateAccountRequest = {
     email: string
@@ -19,7 +19,7 @@ export async function createAccount(request: CreateAccountRequest): Promise<Crea
     if (fakeApi) {
         return new Promise(resolve => setTimeout(() => resolve({ account: fakeLoginAccount }), fakeDelay))
     }
-    return index.put('account', { json: request }).json()
+    return api.put('account', { json: request }).json()
 }
 
 export type LoginRequest = {
@@ -41,7 +41,13 @@ export async function login(request: LoginRequest): Promise<LoginResponse> {
     if (fakeApi) {
         return new Promise(resolve => setTimeout(() => resolve({ account: fakeLoginAccount }), fakeDelay))
     }
-    return index.post('account', { json: request }).json()
+    const res = await api.post('account', { json: request })
+    if (res.status === Status.TOO_MANY_REQUESTS) {
+        return { 'wrong-captcha': true }
+    } else if (res.status === Status.FORBIDDEN) {
+        return { 'account-locked': true }
+    }
+    return res.json()
 }
 
 export type VerifyResponse = {
@@ -53,29 +59,37 @@ export async function verify(): Promise<VerifyResponse> {
     if (fakeApi) {
         return new Promise(resolve => setTimeout(() => resolve({ account: fakeVerifyAccount }), fakeDelay))
     }
-    return index.get('account').json()
-}
-
-export type LogoutResponse = {
-    success?: boolean
-    unauthorized?: boolean
-}
-
-export async function logout(): Promise<LogoutResponse> {
-    if (fakeApi) {
-        return new Promise(resolve => setTimeout(() => resolve({ success: true }), fakeDelay))
+    const res = await api.get('account')
+    if (res.status === Status.UNAUTHORIZED) {
+        return { unauthorized: true }
     }
-    return index.post('logout').json()
+    return res.json()
 }
 
-export type ResetResponse = {
-    success?: boolean
-    unauthorized?: boolean
-}
-
-export async function reset(): Promise<ResetResponse> {
+export async function logout(): Promise<boolean> {
     if (fakeApi) {
-        return new Promise(resolve => setTimeout(() => resolve({ success: true }), fakeDelay))
+        return new Promise(resolve => setTimeout(() => resolve(true), fakeDelay))
     }
-    return index.post('reset').json()
+    const res = await api.post('logout')
+    if (res.status === Status.UNAUTHORIZED) {
+        return true
+    }
+    if (res.status !== Status.NO_CONTENT) {
+        throw new Error(res.statusText)
+    }
+    return true
+}
+
+export async function reset(): Promise<boolean> {
+    if (fakeApi) {
+        return new Promise(resolve => setTimeout(() => resolve(true), fakeDelay))
+    }
+    const res = await api.post('reset')
+    if (res.status === Status.UNAUTHORIZED) {
+        return false
+    }
+    if (res.status !== Status.NO_CONTENT) {
+        throw new Error(res.statusText)
+    }
+    return true
 }

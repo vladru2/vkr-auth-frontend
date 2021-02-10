@@ -1,4 +1,4 @@
-import { index, fakeApi, fakeChallenge, fakeDelay } from '@/api/index'
+import { api, fakeApi, fakeChallenge, fakeDelay, Status } from '@/api/index'
 
 export type EmailVerifyStartResponse = {
     'email-challenge'?: string
@@ -10,13 +10,18 @@ export async function emailVerifyStart(recaptcha: string): Promise<EmailVerifySt
     if (fakeApi) {
         return new Promise(resolve => setTimeout(() => resolve({ 'email-challenge': 'a' }), fakeDelay))
     }
-    return index
-        .post('email/verify/start', {
-            json: {
-                recaptcha,
-            },
-        })
-        .json()
+    const res = await api.post('email/verify/start', {
+        json: {
+            recaptcha,
+        },
+    })
+    if (res.status === Status.UNAUTHORIZED) {
+        return { unauthorized: true }
+    }
+    if (res.status === Status.FORBIDDEN) {
+        return { 'wrong-captcha': true }
+    }
+    return res.json()
 }
 
 export type EmailVerifyFinishResponse = {
@@ -29,13 +34,20 @@ export async function emailVerifyFinish(actionToken: string): Promise<EmailVerif
     if (fakeApi) {
         return new Promise(resolve => setTimeout(() => resolve({ success: true }), fakeDelay))
     }
-    return index
-        .post('email/verify/finish', {
-            json: {
-                'action-token': actionToken,
-            },
-        })
-        .json()
+    const res = await api.post('email/verify/finish', {
+        json: {
+            'action-token': actionToken,
+        },
+    })
+    if (res.status === Status.UNAUTHORIZED) {
+        return { unauthorized: true }
+    } else if (res.status === Status.RESET_CONTENT) {
+        return { 'outdated-token': true }
+    }
+    if (res.status !== Status.NO_CONTENT) {
+        throw new Error(res.statusText)
+    }
+    return { success: true }
 }
 
 export type EmailChangeStartResponse = {
@@ -49,13 +61,15 @@ export async function emailChangeStart(recaptcha: string): Promise<EmailChangeSt
     if (fakeApi) {
         return new Promise(resolve => setTimeout(() => resolve({ [fakeChallenge]: 'a' }), fakeDelay))
     }
-    return index
-        .post('email/change/start', {
-            json: {
-                recaptcha,
-            },
-        })
-        .json()
+    const res = await api.post('email/change/start', {
+        json: {
+            recaptcha,
+        },
+    })
+    if (res.status === Status.UNAUTHORIZED) {
+        return { unauthorized: true }
+    }
+    return res.json()
 }
 
 export type EmailChangeFinishResponse = {
@@ -70,12 +84,16 @@ export async function emailChangeFinish(actionToken: string, newEmail: string): 
     if (fakeApi) {
         return new Promise(resolve => setTimeout(() => resolve({ success: true }), fakeDelay))
     }
-    return index
-        .post('email/change/finish', {
-            json: {
-                'action-token': actionToken,
-                'new-email': newEmail,
-            },
-        })
-        .json()
+    const res = await api.post('email/change/finish', {
+        json: {
+            'action-token': actionToken,
+            'new-email': newEmail,
+        },
+    })
+    if (res.status === Status.UNAUTHORIZED) {
+        return { unauthorized: true }
+    } else if (res.status === Status.RESET_CONTENT) {
+        return { 'outdated-token': true }
+    }
+    return res.json()
 }

@@ -1,4 +1,4 @@
-import { index, fakeApi, fakeChallenge, fakeDelay } from '@/api/index'
+import { api, fakeApi, fakeChallenge, fakeDelay, Status } from '@/api/index'
 import { Account } from './index'
 
 export type PasswordChangeStartResponse = {
@@ -12,19 +12,20 @@ export async function passwordChangeStart(recaptcha?: string): Promise<PasswordC
     if (fakeApi) {
         return new Promise(resolve => setTimeout(() => resolve({ [fakeChallenge]: 'a' })))
     }
-    return index
-        .post('password/change/start', {
-            json: {
-                recaptcha,
-            },
-        })
-        .json()
+    const res = await api.post('password/change/start', {
+        json: {
+            recaptcha,
+        },
+    })
+    if (res.status === Status.UNAUTHORIZED) {
+        return { unauthorized: true }
+    }
+    return res.json()
 }
 
 export type PasswordChangeFinishResponse = {
     success?: boolean
     unauthorized?: boolean
-    'invalid-password'?: boolean
     'outdated-token'?: boolean
 }
 
@@ -35,14 +36,21 @@ export async function passwordChangeFinish(
     if (fakeApi) {
         return new Promise(resolve => setTimeout(() => resolve({ success: true }), fakeDelay))
     }
-    return index
-        .post('password/change/finish', {
-            json: {
-                'action-token': actionToken,
-                'new-password': newPassword,
-            },
-        })
-        .json()
+    const res = await api.post('password/change/finish', {
+        json: {
+            'action-token': actionToken,
+            'new-password': newPassword,
+        },
+    })
+    if (res.status === Status.UNAUTHORIZED) {
+        return { unauthorized: true }
+    } else if (res.status === Status.RESET_CONTENT) {
+        return { 'outdated-token': true }
+    }
+    if (res.status !== Status.NO_CONTENT) {
+        throw new Error(res.statusText)
+    }
+    return { success: true }
 }
 
 export type PasswordRecoverStartResponse = {
@@ -52,19 +60,22 @@ export type PasswordRecoverStartResponse = {
 }
 
 export async function passwordRecoverStart(login: string, recaptcha: string): Promise<PasswordRecoverStartResponse> {
-    return index
-        .post('password/recover/start', {
-            json: {
-                login,
-                recaptcha,
-            },
-        })
-        .json()
+    const res = await api.post('password/recover/start', {
+        json: {
+            login,
+            recaptcha,
+        },
+    })
+    if (res.status === Status.UNAUTHORIZED) {
+        return { 'unknown-user': true }
+    } else if (res.status === Status.FORBIDDEN) {
+        return { 'wrong-captcha': true }
+    }
+    return res.json()
 }
 
 export type PasswordRecoverFinishResponse = {
     account?: Account
-    'invalid-password'?: boolean
     'outdated-token'?: boolean
 }
 
@@ -72,12 +83,14 @@ export async function passwordRecoverFinish(
     actionToken: string,
     newPassword: string
 ): Promise<PasswordRecoverFinishResponse> {
-    return index
-        .post('password/recover/finish', {
-            json: {
-                'action-token': actionToken,
-                'new-password': newPassword,
-            },
-        })
-        .json()
+    const res = await api.post('password/recover/finish', {
+        json: {
+            'action-token': actionToken,
+            'new-password': newPassword,
+        },
+    })
+    if (res.status === Status.RESET_CONTENT) {
+        return { 'outdated-token': true }
+    }
+    return res.json()
 }

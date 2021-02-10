@@ -148,15 +148,13 @@ export default {
             const delay = new Promise(resolve => setTimeout(resolve, 300 + Math.random() * 400))
             reset()
                 .then(res => {
-                    if (res.success) {
+                    if (res) {
                         this.resetDone = true
                         delay.then(() => this.setLoading(false))
                         return
                     }
+                    this.$store.commit('auth/finished', null)
                     this.setLoading(false)
-                    if (res.unauthorized) {
-                        this.$store.commit('auth/finished', null)
-                    }
                 })
                 .catch(() => {
                     this.requestFailed = true
@@ -167,7 +165,7 @@ export default {
             logout()
                 .then(res => {
                     this.setLoading(false)
-                    if (res['success'] || res['unauthorized']) {
+                    if (res) {
                         this.$store.commit('auth/finished', null)
                         this.$router.push('/login')
                     }

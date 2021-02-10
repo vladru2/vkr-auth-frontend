@@ -1,10 +1,11 @@
-import { index, fakeApi, fakeDelay } from '@/api/index'
+import { api, fakeApi, fakeDelay, Status } from '@/api/index'
 
 export type PasswordChallengeResponse = {
     'action-token'?: string
     unauthorized?: boolean
     'outdated-challenge'?: boolean
     'wrong-password'?: boolean
+    'password-reset'?: boolean
 }
 
 export async function completePasswordChallenge(
@@ -14,14 +15,18 @@ export async function completePasswordChallenge(
     if (fakeApi) {
         return new Promise(resolve => setTimeout(() => resolve({ 'action-token': 'a' }), fakeDelay))
     }
-    return index
-        .post('complete-challenge/password', {
-            json: {
-                challenge,
-                password,
-            },
-        })
-        .json()
+    const res = await api.post('complete-challenge/password', {
+        json: {
+            challenge,
+            password,
+        },
+    })
+    if (res.status === Status.UNAUTHORIZED) {
+        return { unauthorized: true }
+    } else if (res.status === Status.RESET_CONTENT) {
+        return { 'outdated-challenge': true }
+    }
+    return res.json()
 }
 
 export type EmailChallengeResponse = {
@@ -35,9 +40,13 @@ export async function completeEmailChallenge(challenge: string, code: string): P
     if (fakeApi) {
         return new Promise(resolve => setTimeout(() => resolve({ 'action-token': 'a' }), fakeDelay))
     }
-    return index
-        .post('complete-challenge/email', {
-            json: { challenge, code },
-        })
-        .json()
+    const res = await api.post('complete-challenge/email', {
+        json: { challenge, code },
+    })
+    if (res.status === Status.UNAUTHORIZED) {
+        return { unauthorized: true }
+    } else if (res.status === Status.RESET_CONTENT) {
+        return { 'outdated-challenge': true }
+    }
+    return res.json()
 }
